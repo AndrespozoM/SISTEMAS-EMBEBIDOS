@@ -1,0 +1,235 @@
+/*
+ * Capitulo III: MODULOS DE COMUNICACION 
+ * CODIGO 12: Comunicacion I2C 
+ * OBJETIVO: Enviar mensjes desde un master hacia 3 esclavos 
+ * Nombre:  Andres Pozo Montalvo
+ * Funciones: Wire.begin()                       //Iniica el hadware del bus
+ *            Wire.beginTransmission(address);   //Comenzar la transmision   
+ *            Wire.endnTransmission(address);    //Finalizar la transmision
+ *            Wire.requestFrom(address, nBytes); //Solicita un numero de bytes esclavo en la dreccion address
+ */
+
+ /////////////////////////MAESTRO///////////////////////////////
+ 
+ #include <Wire.h>      //Libreria I2C  
+ char dato;             //Variable de almacenamiento de datos 
+ int i=0;
+void setup() {
+  Wire.begin();        //Inicia comunicacion I2C
+  Serial.begin(9600);  //Inicia comunicacion serial
+}
+
+void loop() {
+  if(Serial.available()>0){       //Verificar que exista datos
+    i++;
+    if(i==1){
+      dato=Serial.read();           //Almacena el dato en la variable
+      Wire.beginTransmission(1);    //Empieza la comunicacion I2C
+      Wire.write(dato);             //Envio dato
+      Wire.endTransmission();       //Termina la comunicacion I2C
+      Wire.requestFrom(4,2);
+      delay(300);
+    }
+    else{
+      if(i==2){
+        dato=Serial.read();           //Almacena el dato en la variable
+        Wire.beginTransmission(2);    //Empieza la comunicacion I2C
+        Wire.write(dato);             //Envio dato
+        Wire.endTransmission();       //Termina la comunicacion I2C
+        Wire.requestFrom(4,2);
+        delay(300);
+      }
+      else{
+        if(i==3){
+          dato=Serial.read();           //Almacena el dato en la variable
+          Wire.beginTransmission(3);    //Empieza la comunicacion I2C
+          Wire.write(dato);             //Envio dato
+          Wire.endTransmission();       //Termina la comunicacion I2C 
+          Wire.requestFrom(4,2);
+          i=0;
+          delay(300);
+        }
+      }
+    }
+  }
+}
+
+
+
+ /////////////////////////ESCLAVO 1///////////////////////////////
+ 
+ #include <Wire.h>      //Libreria I2C  
+ char dato;             //Variable de almacenamiento de datos 
+ const int led1=8;      //led1 en pin 8
+ const int led2=9;      //led1 en pin 9
+ const int led3=10;      //led1 en pin 10
+ const int led4=11;      //led1 en pin 11
+ 
+ 
+void setup() {
+  Wire.begin(1);           //Inicia comunicacion I2C
+  Wire.onReceive(receiveEvent); 
+  Serial.begin(9600);      //Inicia comunicacion serial
+  pinMode(led1,OUTPUT);    //Pin 8 como salida
+  pinMode(led2,OUTPUT);    //Pin 9 como salida
+  pinMode(led3,OUTPUT);    //Pin 10 como salida
+  pinMode(led4,OUTPUT);    //Pin 11 como salida
+}
+
+void loop() {
+  delay(100);                     //Tiempo de espera
+}
+
+void receiveEvent(int bytes){
+  while(Wire.available()){
+    dato=Wire.read();
+    digitalWrite(led1,HIGH);
+    delay(1000); 
+    digitalWrite(led2,LOW); 
+    digitalWrite(led3,LOW); 
+    digitalWrite(led4,LOW); 
+    delay(9000);
+    digitalWrite(led2,HIGH); 
+    delay(1000);
+    digitalWrite(led1,LOW); 
+    digitalWrite(led3,LOW);
+    digitalWrite(led4,LOW);  
+    delay(9000);
+    digitalWrite(led3,HIGH); 
+    delay(1000);
+    digitalWrite(led1,LOW); 
+    digitalWrite(led2,LOW); 
+    digitalWrite(led4,LOW);  
+    delay(9000);
+    digitalWrite(led4,HIGH);
+    delay(1000);
+    digitalWrite(led1,LOW); 
+    digitalWrite(led2,LOW); 
+    digitalWrite(led3,LOW);  
+    delay(9000);
+    digitalWrite(led1,LOW); 
+    digitalWrite(led2,LOW); 
+    digitalWrite(led3,LOW); 
+    digitalWrite(led4,LOW);
+    delay(4000);
+  }
+}
+
+
+
+ /////////////////////////ESCLAVO 2///////////////////////////////
+ 
+ #include <Wire.h>      //Libreria I2C  
+ char dato;             //Variable de almacenamiento de datos 
+ const int led1=8;      //led1 en pin 8
+ const int led2=9;      //led1 en pin 9
+ const int led3=10;      //led1 en pin 10
+ const int led4=11;      //led1 en pin 11
+ 
+ 
+void setup() {
+  Wire.begin(2);           //Inicia comunicacion I2C
+  Wire.onReceive(receiveEvent); 
+  Serial.begin(9600);      //Inicia comunicacion serial
+  pinMode(led1,OUTPUT);    //Pin 8 como salida
+  pinMode(led2,OUTPUT);    //Pin 9 como salida
+  pinMode(led3,OUTPUT);    //Pin 10 como salida
+  pinMode(led4,OUTPUT);    //Pin 11 como salida
+}
+
+void loop() {
+  delay(100);                     //Tiempo de espera
+}
+
+void receiveEvent(int bytes){
+  while(Wire.available()){
+    dato=Wire.read();
+    digitalWrite(led1,HIGH);
+    delay(1000); 
+    digitalWrite(led2,LOW); 
+    digitalWrite(led3,LOW); 
+    digitalWrite(led4,LOW);
+    delay(9000);
+    digitalWrite(led2,HIGH); 
+    delay(1000);
+    digitalWrite(led1,LOW); 
+    digitalWrite(led3,LOW);
+    digitalWrite(led4,LOW);  
+    delay(9000);
+    digitalWrite(led3,HIGH); 
+    delay(1000);
+    digitalWrite(led1,LOW); 
+    digitalWrite(led2,LOW);
+    digitalWrite(led4,LOW);   
+    delay(9000);
+    digitalWrite(led4,HIGH); 
+    delay(1000);
+    digitalWrite(led1,LOW); 
+    digitalWrite(led2,LOW);
+    digitalWrite(led3,LOW);   
+    delay(9000);
+    digitalWrite(led1,LOW); 
+    digitalWrite(led2,LOW); 
+    digitalWrite(led3,LOW); 
+    digitalWrite(led4,LOW);
+    delay(4000);
+  }
+}
+
+ /////////////////////////ESCLAVO 3///////////////////////////////
+ 
+ #include <Wire.h>      //Libreria I2C  
+ char dato;             //Variable de almacenamiento de datos 
+ const int led1=8;      //led1 en pin 8
+ const int led2=9;      //led1 en pin 9
+ const int led3=10;      //led1 en pin 10
+ const int led4=11;      //led1 en pin 11
+ 
+void setup() {
+  Wire.begin(3);           //Inicia comunicacion I2C
+  Wire.onReceive(receiveEvent); 
+  Serial.begin(9600);      //Inicia comunicacion serial
+  pinMode(led1,OUTPUT);    //Pin 8 como salida
+  pinMode(led2,OUTPUT);    //Pin 9 como salida
+  pinMode(led3,OUTPUT);    //Pin 10 como salida
+  pinMode(led4,OUTPUT);    //Pin 11 como salida
+}
+
+void loop() {
+  delay(100);                     //Tiempo de espera
+}
+
+void receiveEvent(int bytes){
+  while(Wire.available()){
+    dato=Wire.read();
+    digitalWrite(led1,HIGH);
+    delay(1000); 
+    digitalWrite(led2,LOW); 
+    digitalWrite(led3,LOW); 
+    digitalWrite(led4,LOW);
+    delay(9000);
+    digitalWrite(led2,HIGH); 
+    delay(1000);
+    digitalWrite(led1,LOW); 
+    digitalWrite(led3,LOW);
+    digitalWrite(led4,LOW);  
+    delay(9000);
+    digitalWrite(led3,HIGH); 
+    delay(1000);
+    digitalWrite(led1,LOW); 
+    digitalWrite(led2,LOW);
+    digitalWrite(led4,LOW);   
+    delay(9000);
+    digitalWrite(led4,HIGH); 
+    delay(1000);
+    digitalWrite(led1,LOW); 
+    digitalWrite(led2,LOW);
+    digitalWrite(led3,LOW);   
+    delay(9000);
+    digitalWrite(led1,LOW); 
+    digitalWrite(led2,LOW); 
+    digitalWrite(led3,LOW);
+    digitalWrite(led4,LOW); 
+    delay(4000);
+  }
+}
